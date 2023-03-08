@@ -6,7 +6,7 @@
 #    By: pvong <marvin@42lausanne.ch>               +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/08 14:49:58 by pvong             #+#    #+#              #
-#    Updated: 2023/03/08 17:31:48 by pvong            ###   ########.fr        #
+#    Updated: 2023/03/08 18:00:10 by pvong            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,11 +21,11 @@ END				=	\033[0m
 # LIBFT
 
 LIBFT_DIR = org_libft
-ISALNUM_DIR = $(addprefix ./$(LIBFT_DIR)/, ft_isalnum)
-LIST_DIR = $(addprefix ./$(LIBFT_DIR)/, ft_list)
-STR_DIR = $(addprefix ./$(LIBFT_DIR)/, ft_STR)
-PUT_DIR = $(addprefix ./$(LIBFT_DIR)/, ft_put)
-STR_DIR = $(addprefix ./$(LIBFT_DIR)/, ft_str)
+ISALNUM_DIR = $(addprefix $(LIBFT_DIR)/, ft_isalnum)
+LIST_DIR = $(addprefix $(LIBFT_DIR)/, ft_list)
+MEM_DIR = $(addprefix $(LIBFT_DIR)/, ft_mem)
+PUT_DIR = $(addprefix $(LIBFT_DIR)/, ft_put)
+STR_DIR = $(addprefix $(LIBFT_DIR)/, ft_str)
 
 ISALNUM_SOURCES		=	ft_isalnum \
 						ft_isalpha \
@@ -82,15 +82,23 @@ STR_SOURCES			=	ft_strchr \
 						ft_tolower \
 						ft_toupper \
 
-STR_PREF			= $(addprefix ./$(STR_DIR)/, $(STR_SOURCES))
-STR_SRC				= $(addsuffix .c, $(STR_PREF))
+STR_PREF			=	$(addprefix ./$(STR_DIR)/, $(STR_SOURCES))
+STR_SRC				=	$(addsuffix .c, $(STR_PREF))
 
 LIBFT_OTHERS		=	ft_atoi \
 						ft_itoa \
 						ft_split
 
-LIBFT_OTHERS_PREF	= $(addprefix ./$(LIBFT_DIR)/, $(LIBFT_OTHERS))
-LIBFT_OTHERS_SRC	= $(addsuffix .c, $(LIBFT_OTHERS_PREF))
+LIBFT_OTHERS_PREF	=	$(addprefix ./$(LIBFT_DIR)/, $(LIBFT_OTHERS))
+LIBFT_OTHERS_SRC	=	$(addsuffix .c, $(LIBFT_OTHERS_PREF))
+
+LIBFT_SOURCES		=	$(ISALNUM_SOURCES) \
+						$(LIST_SOURCES) \
+						$(MEM_SOURCES) \
+						$(PUT_SOURCES) \
+						$(STR_SOURCES) \
+						$(LIBFT_OTHERS)
+
 
 LIBFT_SRC =	$(ISALNUM_SRC) \
 			$(LIST_SRC) \
@@ -108,7 +116,7 @@ PRINTF_SOURCES	=	ft_printf \
 					ft_printnbr \
 					ft_printptr
 
-PRINTF_PREF		=	$(addprefix ./$(PRINTF_DIR), $(PRINTF_SOURCES))
+PRINTF_PREF		=	$(addprefix ./$(PRINTF_DIR)/, $(PRINTF_SOURCES))
 PRINTF_SRC		=	$(addsuffix .c, $(PRINTF_PREF))
 
 # GNL
@@ -129,14 +137,21 @@ GNL_SRCB		=	$(addsuffix .c, $(GNL_PREFB))
 
 # SRC
 
-SRC				=	LIBFT_SRC \
-					PRINTF_SRC \
-					GNL_SRC
+SRC				=	$(LIBFT_SRC) \
+					$(PRINTF_SRC) \
+					$(GNL_SRC)
 
-SRCB			=	LIBFT_SRC \
-					PRINTF_SRC \
-					GNL_SRCB
+SOURCES			=	$(LIBFT_SOURCES) \
+					$(PRINTF_SOURCES) \
+					$(GNL_SOURCES)
 
+SRCB			=	$(LIBFT_SRC) \
+					$(PRINTF_SRC) \
+					$(GNL_SRCB)
+
+SOURCESB		=	$(LIBFT_SOURCES) \
+					$(PRINTF_SOURCES) \
+					$(GNL_SOURCESB)
 # OBJS
 
 OBJF			=	.objcache
@@ -144,8 +159,8 @@ OBJBF			=	.objbcache
 
 OBJS_DIR		=	objs
 OBJSB_DIR		=	objsb
-OBJS			=	$(addprefix ./$(OBJS_DIR)/, $(SRC:.c=.o))
-OBJSB			=	$(addprefix ./$(OBJSB_DIR)/, $(SRCB:.c=.o))
+OBJS			=	$(addprefix ./$(OBJS_DIR)/, $(addsuffix .o, $(SOURCES)))
+OBJSB			=	$(addprefix ./$(OBJSB_DIR)/, $(addsuffix .o, $(SOURCESB)))
 
 # COMPILATION
 
@@ -153,7 +168,9 @@ INC				=	-I ./includes
 CC				=	gcc
 CFLAGS			=	-Wall -Werror -Wextra
 
-all:	$(NAME)
+all: $(NAME)
+
+# all: ; $(info $$var is [${SRC}])
 
 $(OBJF):
 	@mkdir -p $(OBJS_DIR)
@@ -173,9 +190,18 @@ $(NAME):	$(OBJS)
 bonus:		$(OBJSB)
 			ar rcs $(NAME) $(OBJSB)
 
+git:
+	git add .
+	git commit -am "update"
+	git push
+
 clean:
-			@rm -rf $(OBJS_DIR)
-			@rm -rf $(OBJSB_DIR)
+			rm -rf $(OBJS_DIR)
+			rm -rf $(OBJSB_DIR)
 
 fclean:		clean
-			@rm -f $(NAME)
+			rm -f $(NAME)
+
+re:			fclean all
+
+.PHONY: all fclean clean re
