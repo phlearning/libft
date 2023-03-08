@@ -6,7 +6,7 @@
 #    By: pvong <marvin@42lausanne.ch>               +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/08 14:49:58 by pvong             #+#    #+#              #
-#    Updated: 2023/03/08 18:00:10 by pvong            ###   ########.fr        #
+#    Updated: 2023/03/08 18:41:19 by pvong            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -154,9 +154,6 @@ SOURCESB		=	$(LIBFT_SOURCES) \
 					$(GNL_SOURCESB)
 # OBJS
 
-OBJF			=	.objcache
-OBJBF			=	.objbcache
-
 OBJS_DIR		=	objs
 OBJSB_DIR		=	objsb
 OBJS			=	$(addprefix ./$(OBJS_DIR)/, $(addsuffix .o, $(SOURCES)))
@@ -167,28 +164,32 @@ OBJSB			=	$(addprefix ./$(OBJSB_DIR)/, $(addsuffix .o, $(SOURCESB)))
 INC				=	-I ./includes
 CC				=	gcc
 CFLAGS			=	-Wall -Werror -Wextra
+BONUS_CACHE		=	.bonus
 
 all: $(NAME)
 
 # all: ; $(info $$var is [${SRC}])
 
-$(OBJF):
+$(OBJS_DIR)/%.o: $(SRC)
 	@mkdir -p $(OBJS_DIR)
+	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
+	@echo -n .
 
-$(OBJBF):
+$(OBJSB_DIR)/%.o: $(SRCB)
 	@mkdir -p $(OBJSB_DIR)
-
-$(OBJS_DIR)/%.o: $(SRC) | $(OBJF)
-	$(CC) $(CFLAGS) $(INC) -c $< -o $@
-
-$(OBJSB_DIR)/%.o: $(SRCB) | $(OBJBF)
-	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
+	@echo -n .
 
 $(NAME):	$(OBJS)
-			ar rcs $(NAME) $(OBJS)
+			@ar rcs $(NAME) $(OBJS)
+			@echo "$(BLUE)\nCreated $@$(END)"
 
-bonus:		$(OBJSB)
-			ar rcs $(NAME) $(OBJSB)
+bonus:	$(BONUS_CACHE)
+
+$(BONUS_CACHE):		$(OBJSB)
+			@ar rcs $(NAME) $(OBJSB)
+			@echo cache > $(BONUS_CACHE)
+			@echo "$(BLUE)\nCreated $(NAME)$(END)"
 
 git:
 	git add .
@@ -198,6 +199,7 @@ git:
 clean:
 			rm -rf $(OBJS_DIR)
 			rm -rf $(OBJSB_DIR)
+			rm -f $(BONUS_CACHE)
 
 fclean:		clean
 			rm -f $(NAME)
