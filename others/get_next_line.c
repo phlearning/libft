@@ -6,12 +6,11 @@
 /*   By: pvong <marvin@42lausanne.ch>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 12:22:46 by pvong             #+#    #+#             */
-/*   Updated: 2022/11/11 18:01:30 by pvong            ###   ########.fr       */
+/*   Updated: 2023/03/11 13:48:20 by pvong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
-#include <stdio.h>
+#include "libft.h"
 
 int	ft_free_read_error(int fd, char **buffer)
 {
@@ -76,7 +75,7 @@ void	ft_read_line(int fd, char *buffer, char **str)
 			*str = ft_strjoin(*str, buffer);
 			free(tmp);
 		}
-		if (ft_strchr(buffer, '\n') > 0)
+		if (ft_strchr(buffer, '\n'))
 			break ;
 		rd = read(fd, buffer, BUFFER_SIZE);
 		buffer[rd] = '\0';

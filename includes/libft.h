@@ -6,7 +6,7 @@
 /*   By: pvong <marvin@42lausanne.ch>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 13:46:34 by pvong             #+#    #+#             */
-/*   Updated: 2023/03/08 14:53:29 by pvong            ###   ########.fr       */
+/*   Updated: 2023/03/11 13:45:12 by pvong            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,11 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
+# include <fcntl.h>
+# include <stdarg.h>
+# include <stdint.h>
+
+/* -----------------   LIBFT   ----------------- */
 
 typedef struct s_list
 {
@@ -65,5 +70,47 @@ int		ft_lstsize(t_list *lst);
 t_list	*ft_lstlast(t_list *lst);
 void	ft_lstadd_back(t_list **lst, t_list *new);
 void	ft_lstdelone(t_list *lst, void (*del)(void *));
+
+/* ----------------- FT_PRINTF ----------------- */
+
+/* Char & str */
+
+int				ft_printchar(char c);
+int				ft_printstr(const char *str);
+
+/* nbr */
+
+int				ft_get_unbr_len(unsigned int n);
+char			*ft_uitoa(unsigned int n);
+int				ft_printnbr(int n);
+unsigned int	ft_printunbr(unsigned int n);
+
+/* HEX */
+
+int				ft_hex_len(unsigned int n);
+void			ft_puthex(unsigned int n, char type);
+int				ft_printhex(unsigned int n, char type);
+
+/* PTR */
+
+int				ft_ptr_len(uintptr_t n);
+void			ft_put_ptr(uintptr_t n);
+int				ft_printptr(unsigned long long n);
+
+/* ft_printf */
+
+int				ft_get_format(va_list args, char specifier);
+int				ft_printf(const char *str, ...);
+
+/* -----------------    GNL    ----------------- */
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
+
+int		ft_free_read_error(int fd, char **buffer);
+char	*ft_get_line(char **str, char **line);
+void	ft_read_line(int fd, char *buffer, char **str);
+char	*get_next_line(int fd);
 
 #endif
